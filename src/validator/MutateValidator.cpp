@@ -229,22 +229,22 @@ Status InsertEdgesValidator::prepareEdges() {
         auto valsRet = SchemaUtil::toValueVec(row->values());
         NG_RETURN_IF_ERROR(valsRet);
         auto props = std::move(valsRet).value();
-        // outbound
         storage::cpp2::NewEdge edge;
-        edge.key.set_src(srcId);
-        edge.key.set_dst(dstId);
         edge.key.set_ranking(rank);
-        edge.key.set_edge_type(edgeType_);
+        // inbound
+        edge.key.set_src(dstId);
+        edge.key.set_dst(srcId);
+        edge.key.set_edge_type(-edgeType_);
         edge.set_props(std::move(props));
         edge.__isset.key = true;
         edge.__isset.props = true;
         edges_.emplace_back(edge);
 
         if (!useToss) {
-            // inbound
-            edge.key.set_src(dstId);
-            edge.key.set_dst(srcId);
-            edge.key.set_edge_type(-edgeType_);
+            // outbound
+            edge.key.set_src(srcId);
+            edge.key.set_dst(dstId);
+            edge.key.set_edge_type(edgeType_);
             edges_.emplace_back(std::move(edge));
         }
     }
