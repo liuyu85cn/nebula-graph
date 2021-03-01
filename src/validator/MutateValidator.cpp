@@ -670,24 +670,24 @@ Status UpdateEdgeValidator::toPlan() {
                                      {},
                                      condition_,
                                      {});
+    auto *inNode = UpdateEdge::make(qctx_,
+                                    outNode,
+                                    spaceId_,
+                                    std::move(name_),
+                                    std::move(dstId_),
+                                    std::move(srcId_),
+                                    -edgeType_,
+                                    rank_,
+                                    insertable_,
+                                    std::move(updatedProps_),
+                                    std::move(returnProps_),
+                                    std::move(condition_),
+                                    std::move(yieldColNames_));
     auto useToss = space_.spaceDesc.isolation_level == meta::cpp2::IsolationLevel::TOSS;
     if (useToss) {
-        root_ = outNode;
+        root_ = inNode;
         tail_ = root_;
     } else {
-        auto *inNode = UpdateEdge::make(qctx_,
-                                        outNode,
-                                        spaceId_,
-                                        std::move(name_),
-                                        std::move(dstId_),
-                                        std::move(srcId_),
-                                        -edgeType_,
-                                        rank_,
-                                        insertable_,
-                                        std::move(updatedProps_),
-                                        std::move(returnProps_),
-                                        std::move(condition_),
-                                        std::move(yieldColNames_));
         root_ = inNode;
         tail_ = outNode;
     }
